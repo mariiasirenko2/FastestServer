@@ -8,6 +8,7 @@ public class FastestServerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FastestServerApplication.class, args);
+
 	}
 
 }
