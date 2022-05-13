@@ -4,7 +4,10 @@ import com.example.fastest_server.answer.Answer;
 import com.example.fastest_server.test.Test;
 import com.example.fastest_server.variantquestion.VariantQuestion;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -13,6 +16,8 @@ import java.util.Set;
 @Entity
 @Table(name = "questions")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Question {
 
     @Id
@@ -27,10 +32,20 @@ public class Question {
     @JsonIgnore
     private Test test;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
-    private Collection<Answer> question;
+    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    private Collection<Answer> answers;
 
 
     @OneToMany(mappedBy = "question")
     private Set<VariantQuestion> variantQuestions;
+
+    public void addAnswer(Answer answer) {
+        answers.add(answer);
+    }
+
+    public Question(String text, Collection<Answer> answers) {
+        this.text = text;
+        this.answers = answers;
+    }
+
 }
