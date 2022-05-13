@@ -2,6 +2,8 @@ package com.example.fastest_server.user;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,10 +14,11 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping(path ="/profile/{userId}")
-    public String hello (@PathVariable("userId") Integer userId){
+    @GetMapping(path ="/profile")
+    public User logIn (){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
-        return "Hello "+userId;
+        return userService.getUserIdByUsername(auth.getName());
     }
 
     @PostMapping (path = "/signup")

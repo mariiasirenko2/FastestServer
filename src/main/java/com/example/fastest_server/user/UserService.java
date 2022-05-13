@@ -2,6 +2,7 @@ package com.example.fastest_server.user;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,13 @@ public class UserService {
 
 
         return user;
+    }
+
+    public User getUserIdByUsername(String username){
+
+        return userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(
+                "User not found: check username"));
+
     }
 
 }
