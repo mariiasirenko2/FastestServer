@@ -31,8 +31,8 @@ public class User  {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    /*@OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private Collection<Test> tests;*/
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Collection<Test> tests;
 
 
     public User (String username, String email, String password){

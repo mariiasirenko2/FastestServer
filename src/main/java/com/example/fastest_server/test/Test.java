@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "tests")
@@ -28,10 +29,10 @@ public class Test {
     @Column (name = "student_file")
     private String fileWithStudents;
 
-    /*@ManyToOne (fetch = FetchType.LAZY, optional = false)
+    @ManyToOne (fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", nullable = false)
     @JsonIgnore
-    private User owner;*/
+    private User owner;
 
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
     private Collection<Question> questions;
@@ -39,6 +40,12 @@ public class Test {
     public Test(String testName, String fileWithQuestions) {
         this.testName = testName;
         this.fileWithQuestions = fileWithQuestions;
+    }
+
+    public Test(String testName, String fileWithQuestions, User owner) {
+        this.testName = testName;
+        this.fileWithQuestions = fileWithQuestions;
+        this.owner = owner;
     }
 
     public void setQuestionsKeys() {

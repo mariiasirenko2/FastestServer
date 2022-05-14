@@ -10,10 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
@@ -38,20 +35,33 @@ public class TestController {
     AnswerService answerService;
 
 
-    @PostMapping("/GenerateTest")
-    public void generateTest(String testName, File file) throws JAXBException, Docx4JException {
-        Test test = new Test(testName, "file_location");
-        test.setQuestions(questionService.readQuestions(file));
-        test.setQuestionsKeys();
-        testService.addTest(test);
+    @GetMapping("/profile/{idUser}/GetTests")
+    public List<Test> getTests(@PathVariable(value = "idUser") int idUser) {
+        return testService.getTestByOwner(userService.getUserById(idUser));
+
     }
 
-    /*
-    @PostMapping("/GenerateTest_old")
-    public void generateTest(String testName, String fileLocation) throws JAXBException, Docx4JException {
-        Test test = new Test(testName, fileLocation);
-        test.setQuestions(questionService.readQuestions(fileLocation));
+
+
+    /*@PostMapping("/profile/{idUser}/GenerateTest") TODO: uncomment to work with file names instead of files
+    public void generateTest(@RequestParam(value = "testName") String testName,
+                             @RequestParam(value = "questionFile") String questionFile,
+                             //  @RequestParam(value = "studentFile") String studentFile,
+                             @PathVariable(value = "idUser") int idUser) throws JAXBException, Docx4JException {
+        Test test = new Test(testName, questionFile, userService.getUserById(idUser));
+        test.setQuestions(questionService.readQuestions(questionFile));
         test.setQuestionsKeys();
         testService.addTest(test);
     }*/
+
+    @PostMapping("/profile/{idUser}/GenerateTest")
+    public void generateTest(@RequestParam(value = "testName") String testName,
+                             @RequestParam(value = "questionFile") File questionFile,
+                             //  @RequestParam(value = "studentFile") String studentFile,
+                             @PathVariable(value = "idUser") int idUser) throws JAXBException, Docx4JException {
+        Test test = new Test(testName, "test.docx", userService.getUserById(idUser));
+        test.setQuestions(questionService.readQuestions(questionFile));
+        test.setQuestionsKeys();
+        testService.addTest(test);
+    }
 }

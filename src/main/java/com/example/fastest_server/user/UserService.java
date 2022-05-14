@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static java.lang.Integer.valueOf;
+
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -41,6 +43,11 @@ public class UserService {
         return userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(
                 "User not found: check username"));
 
+    }
+
+    public User getUserById(int id){
+        return userRepository.findById(valueOf(id)).orElseThrow(() -> new UsernameNotFoundException(
+                "User not found: check username"));
     }
 
 }

@@ -32,11 +32,11 @@ public class Question {
     @JsonIgnore
     private Test test;
 
-    @OneToMany(mappedBy = "id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private Collection<Answer> answers;
 
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
     private Set<VariantQuestion> variantQuestions;
 
     public void addAnswer(Answer answer) {
