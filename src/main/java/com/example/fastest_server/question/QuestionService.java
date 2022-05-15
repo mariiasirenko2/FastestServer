@@ -15,18 +15,12 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    public List<Question> readQuestions(File file) throws JAXBException, Docx4JException {
-        QuestionReader questionReader = new QuestionReader(file);
-        return questionReader.getQuestionList();
-
-    }
-
-    /* TODO: uncomment to work with file names instead of files
-    public List<Question> readQuestions(String file) throws JAXBException, Docx4JException {
+    /*public List<Question> readQuestions(File file) throws JAXBException, Docx4JException {
         QuestionReader questionReader = new QuestionReader(file);
         return questionReader.getQuestionList();
 
     }*/
+
 
     public void addQuestion(Question question) {
         questionRepository.saveAndFlush(question);

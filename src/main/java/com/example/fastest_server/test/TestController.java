@@ -2,6 +2,7 @@ package com.example.fastest_server.test;
 
 
 import com.example.fastest_server.answer.AnswerService;
+import com.example.fastest_server.question.DocxReader;
 import com.example.fastest_server.question.Question;
 import com.example.fastest_server.question.QuestionService;
 import com.example.fastest_server.user.User;
@@ -43,18 +44,27 @@ public class TestController {
 
 
 
-    /*@PostMapping("/profile/{idUser}/GenerateTest") TODO: uncomment to work with file names instead of files
+    @PostMapping("/profile/{idUser}/GenerateTest")
     public void generateTest(@RequestParam(value = "testName") String testName,
                              @RequestParam(value = "questionFile") String questionFile,
-                             //  @RequestParam(value = "studentFile") String studentFile,
+                             @RequestParam(value = "studentFile") String studentFile,
                              @PathVariable(value = "idUser") int idUser) throws JAXBException, Docx4JException {
-        Test test = new Test(testName, questionFile, userService.getUserById(idUser));
-        test.setQuestions(questionService.readQuestions(questionFile));
+        Test test = new Test(testName, userService.getUserById(idUser));
+        test.setQuestions(testService.readQuestions(questionFile));
         test.setQuestionsKeys();
+        test.setStudents(testService.readStudents(studentFile));
         testService.addTest(test);
-    }*/
+    }
 
-    @PostMapping("/profile/{idUser}/GenerateTest")
+    @GetMapping("/profile/{idUser}/Tests/{idTest}/Variants")
+    public List<Question> getTestQuestions(@PathVariable(value = "idTest") int idTest) throws Docx4JException, JAXBException {
+        DocxReader docxReader = new DocxReader();
+        Test test = testService.getTestById(idTest);
+        docxReader.generateVariants((List) test.getQuestions(), test.getStudents());
+        return (List) test.getQuestions();
+    }
+
+    /*@PostMapping("/profile/{idUser}/GenerateTest")
     public void generateTest(@RequestParam(value = "testName") String testName,
                              @RequestParam(value = "questionFile") File questionFile,
                              //  @RequestParam(value = "studentFile") String studentFile,
@@ -63,5 +73,7 @@ public class TestController {
         test.setQuestions(questionService.readQuestions(questionFile));
         test.setQuestionsKeys();
         testService.addTest(test);
-    }
+    }*/
+
+
 }

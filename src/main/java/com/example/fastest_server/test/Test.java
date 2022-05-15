@@ -23,11 +23,8 @@ public class Test {
     @Column (name = "test_name")
     private String testName;
 
-    @Column (name ="question_file")
-    private String fileWithQuestions;
-
-    @Column (name = "student_file")
-    private String fileWithStudents;
+    @Column (name = "students_list")
+    private String[] students;
 
     @ManyToOne (fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", nullable = false)
@@ -37,14 +34,8 @@ public class Test {
     @OneToMany(mappedBy = "test", cascade = CascadeType.ALL)
     private Collection<Question> questions;
 
-    public Test(String testName, String fileWithQuestions) {
+    public Test(String testName, User owner) {
         this.testName = testName;
-        this.fileWithQuestions = fileWithQuestions;
-    }
-
-    public Test(String testName, String fileWithQuestions, User owner) {
-        this.testName = testName;
-        this.fileWithQuestions = fileWithQuestions;
         this.owner = owner;
     }
 
@@ -52,5 +43,10 @@ public class Test {
         for (Question i : questions) {
             i.setTest(this);
         }
+    }
+
+    public void setStudents(List<String> students) {
+        this.students = new String[students.size()];
+        students.toArray(this.students);
     }
 }
