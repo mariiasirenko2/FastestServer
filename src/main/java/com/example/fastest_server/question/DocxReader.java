@@ -23,6 +23,12 @@ public class DocxReader {
     List<String> studentList;
     Question lastQuestion;
 
+    ObjectFactory factory;
+
+    public DocxReader() {
+        factory = Context.getWmlObjectFactory();
+    }
+
     public List<Question> readQuestions(String file) throws Docx4JException, JAXBException {
         questionList = new ArrayList<>();
         File doc = new File(file);
@@ -80,53 +86,136 @@ public class DocxReader {
     public void generateVariants(List<Question> questions, String[] students) throws Docx4JException, JAXBException {
         WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
         MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
-        ObjectFactory factory = Context.getWmlObjectFactory();
-        //////////////////////////////////////////////////////////
         NumberingDefinitionsPart numberingDefinitionsPart = new NumberingDefinitionsPart();
-        numberingDefinitionsPart.setJaxbElement(numberingDefinitionsPart.unmarshalDefaultNumbering());
+        numberingDefinitionsPart.setContents(getNumbering());
         mainDocumentPart.addTargetPart(numberingDefinitionsPart);
-
-        StyleDefinitionsPart styleDefinitionsPart = new StyleDefinitionsPart();
-        styleDefinitionsPart.setJaxbElement((Styles) styleDefinitionsPart.unmarshalDefaultStyles());
-        mainDocumentPart.addTargetPart(styleDefinitionsPart);
         /////////////////////////////////////////////////////
         for (Question question: questions) {
-            P paragraph = factory.createP();
-            R run = factory.createR();
-            Text text = factory.createText();
-            text.setValue(question.getText());
-            RPr rpr = factory.createRPr();
-            RFonts rfonts = factory.createRFonts();
-            rfonts.setHAnsi("Times New Roman");
-            rpr.setRFonts(rfonts);
-            HpsMeasure hpsMeasure = factory.createHpsMeasure();
-            hpsMeasure.setVal(BigInteger.valueOf(28));
-            rpr.setSz(hpsMeasure);
-            run.setRPr(rpr);
-            run.getContent().add(text);
-            paragraph.getContent().add(run);
-            PPrBase.NumPr numPr = factory.createPPrBaseNumPr();
-            PPrBase.NumPr.NumId numId = factory.createPPrBaseNumPrNumId();
-            numId.setVal(BigInteger.valueOf(2));
-            PPrBase.NumPr.Ilvl iLvl = factory.createPPrBaseNumPrIlvl();
-            iLvl.setVal(BigInteger.valueOf(0));
-            PPr ppr = factory.createPPr();
-            numPr.setIlvl(iLvl);
-            numPr.setNumId(numId);
-            ppr.setNumPr(numPr);
-            paragraph.setPPr(ppr);
-            mainDocumentPart.getContent().add(paragraph);
+            P questionParagraph = factory.createP();
+            R questionRun = factory.createR();
+            Text questionText = factory.createText();
+            questionText.setValue(question.getText());
+            questionRun.setRPr(gerFontProperty("Times New Roman", 14));
+            questionRun.getContent().add(questionText);
+            questionParagraph.getContent().add(questionRun);
+            PPr questionPPr = factory.createPPr();
+            questionPPr.setNumPr(getNumProperty(1, 0));
+            questionParagraph.setPPr(questionPPr);
+            mainDocumentPart.getContent().add(questionParagraph);
             for (Answer answer : question.getAnswers()) {
-                P paragraphAnswer = factory.createP();
-                R runAnswer = factory.createR();
-                Text textAnswer = factory.createText();
-                textAnswer.setValue(answer.getText());
-                runAnswer.getContent().add(textAnswer);
-                paragraphAnswer.getContent().add(runAnswer);
-                mainDocumentPart.getContent().add(paragraphAnswer);
+                P answerParagraph = factory.createP();
+                R answerRun = factory.createR();
+                Text answerText = factory.createText();
+                answerText.setValue(answer.getText());
+                answerRun.getContent().add(answerText);
+                answerRun.setRPr(gerFontProperty("Times New Roman", 14));
+                answerParagraph.getContent().add(answerRun);
+                PPr answerPPr = factory.createPPr();
+                answerPPr.setNumPr(getNumProperty(1, 1));
+                answerParagraph.setPPr(answerPPr);
+                mainDocumentPart.getContent().add(answerParagraph);
             }
         }
         File exportFile = new File("welcome.docx");
         wordPackage.save(exportFile);
     }
+
+
+    private Numbering getNumbering() {
+        BigInteger listStyleId = BigInteger.valueOf(1);
+        Numbering numbering = factory.createNumbering();
+        Numbering.Num num = factory.createNumberingNum();
+        num.setNumId(listStyleId);
+        Numbering.AbstractNum abstractNum = factory.createNumberingAbstractNum();
+        abstractNum.setAbstractNumId(listStyleId);
+        abstractNum.setMultiLevelType(new Numbering.AbstractNum.MultiLevelType());
+        abstractNum.getMultiLevelType().setVal("hybridMultilevel");
+        Lvl questionLvl = factory.createLvl();
+        questionLvl.setIlvl(BigInteger.ZERO);
+        NumFmt questionNumFmt = factory.createNumFmt();
+        questionLvl.setNumFmt(questionNumFmt);
+        questionNumFmt.setVal(NumberFormat.DECIMAL);
+        Lvl.LvlText questionLvlText = factory.createLvlLvlText();
+        questionLvl.setLvlText(questionLvlText);
+        questionLvlText.setVal("%1.");
+        PPr questionPPr = factory.createPPr();
+        questionLvl.setPPr(questionPPr);
+        RPr questionRPr = factory.createRPr();
+        questionLvl.setRPr(questionRPr);
+        RFonts questionRFonts = factory.createRFonts();
+        questionRPr.setRFonts(questionRFonts);
+        questionRFonts.setAscii("Times New Roman");
+        questionRFonts.setHint(org.docx4j.wml.STHint.DEFAULT);
+        questionRFonts.setHAnsi("Times New Roman");
+        questionRPr.setSz(new HpsMeasure());
+        questionRPr.getSz().setVal(BigInteger.valueOf(28));
+        questionRPr.setB(new BooleanDefaultTrue());
+        Lvl.Start questionStart = factory.createLvlStart();
+        questionLvl.setStart(questionStart);
+        questionStart.setVal(BigInteger.valueOf(1));
+        PPrBase.Ind questionInd = factory.createPPrBaseInd();
+        questionPPr.setInd(questionInd);
+        questionInd.setLeft(BigInteger.valueOf(720));
+        questionInd.setHanging(BigInteger.valueOf(360));
+        abstractNum.getLvl().add(questionLvl);
+
+        Lvl answerLvl = factory.createLvl();
+        answerLvl.setIlvl(BigInteger.ONE);
+        NumFmt answerNumFmt = factory.createNumFmt();
+        answerLvl.setNumFmt(answerNumFmt);
+        answerNumFmt.setVal(NumberFormat.LOWER_LETTER);
+        Lvl.LvlText answerLvlText = factory.createLvlLvlText();
+        answerLvl.setLvlText(answerLvlText);
+        answerLvlText.setVal("%2)");
+        PPr answerPPr = factory.createPPr();
+        answerLvl.setPPr(answerPPr);
+        RPr answerRPr = factory.createRPr();
+        answerLvl.setRPr(answerRPr);
+        RFonts answerRFonts = factory.createRFonts();
+        answerRPr.setRFonts(answerRFonts);
+        answerRFonts.setAscii("Times New Roman");
+        answerRFonts.setHint(org.docx4j.wml.STHint.DEFAULT);
+        answerRFonts.setHAnsi("Times New Roman");
+        answerRPr.setSz(new HpsMeasure());
+        answerRPr.getSz().setVal(BigInteger.valueOf(28));
+        answerRPr.setB(new BooleanDefaultTrue());
+        Lvl.Start answerStart = factory.createLvlStart();
+        answerLvl.setStart(answerStart);
+        answerStart.setVal(BigInteger.valueOf(1));
+        PPrBase.Ind answerInd = factory.createPPrBaseInd();
+        answerPPr.setInd(answerInd);
+        answerInd.setLeft(BigInteger.valueOf(1080));
+        answerInd.setHanging(BigInteger.valueOf(360));
+        abstractNum.getLvl().add(answerLvl);
+
+        Numbering.Num.AbstractNumId abstractNumId = factory.createNumberingNumAbstractNumId();
+        abstractNumId.setVal(listStyleId);
+        num.setAbstractNumId(abstractNumId);
+        numbering.getNum().add(num);
+        numbering.getAbstractNum().add(abstractNum);
+        return numbering;
+    }
+
+    private RPr gerFontProperty(String font, long size) {
+        RPr rPr = factory.createRPr();
+        RFonts rFonts = factory.createRFonts();
+        rFonts.setHAnsi(font);
+        rPr.setRFonts(rFonts);
+        HpsMeasure hpsMeasure = factory.createHpsMeasure();
+        hpsMeasure.setVal(BigInteger.valueOf(size * 2));
+        rPr.setSz(hpsMeasure);
+        return rPr;
+    }
+
+    private PPrBase.NumPr getNumProperty(long numId, long iLvl) {
+        PPrBase.NumPr numPr = factory.createPPrBaseNumPr();
+        numPr.setNumId(new PPrBase.NumPr.NumId());
+        numPr.getNumId().setVal(BigInteger.valueOf(numId));
+        numPr.setIlvl(new PPrBase.NumPr.Ilvl());
+        numPr.getIlvl().setVal(BigInteger.valueOf(iLvl));
+        return numPr;
+    }
+
+
+
 }
