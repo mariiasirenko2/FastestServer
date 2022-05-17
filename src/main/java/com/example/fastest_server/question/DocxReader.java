@@ -89,6 +89,7 @@ public class DocxReader {
         NumberingDefinitionsPart numberingDefinitionsPart = new NumberingDefinitionsPart();
         numberingDefinitionsPart.setContents(getNumbering());
         mainDocumentPart.addTargetPart(numberingDefinitionsPart);
+
         /////////////////////////////////////////////////////
         for (Question question: questions) {
             P questionParagraph = factory.createP();
@@ -101,6 +102,8 @@ public class DocxReader {
             PPr questionPPr = factory.createPPr();
             questionPPr.setNumPr(getNumProperty(1, 0));
             questionParagraph.setPPr(questionPPr);
+            questionParagraph.getPPr().setJc(new Jc());
+            questionParagraph.getPPr().getJc().setVal(JcEnumeration.BOTH);
             mainDocumentPart.getContent().add(questionParagraph);
             for (Answer answer : question.getAnswers()) {
                 P answerParagraph = factory.createP();
@@ -113,6 +116,8 @@ public class DocxReader {
                 PPr answerPPr = factory.createPPr();
                 answerPPr.setNumPr(getNumProperty(1, 1));
                 answerParagraph.setPPr(answerPPr);
+                answerParagraph.getPPr().setJc(new Jc());
+                answerParagraph.getPPr().getJc().setVal(JcEnumeration.BOTH);
                 mainDocumentPart.getContent().add(answerParagraph);
             }
         }
