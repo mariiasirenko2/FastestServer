@@ -9,10 +9,12 @@ import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.NumberingDefinitionsPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.StyleDefinitionsPart;
 import org.docx4j.wml.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +31,9 @@ public class DocxReader {
         factory = Context.getWmlObjectFactory();
     }
 
-    public List<Question> readQuestions(String file) throws Docx4JException, JAXBException {
+    public List<Question> readQuestions(File file) throws Docx4JException, JAXBException {
         questionList = new ArrayList<>();
-        File doc = new File(file);
-        WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(doc);
+        WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(file);
         MainDocumentPart mainDocumentPart = wordMLPackage.getMainDocumentPart();
         String textNodesXPath = "//w:p";
         List<Object> textNodes = mainDocumentPart
@@ -66,11 +67,17 @@ public class DocxReader {
         return questionList;
     }
 
+    public List<Question> getQuestionList() {
+        return questionList;
+    }
 
-    public List<String> readStudents(String file) throws Docx4JException, JAXBException {
+    public List<String> getStudentList() {
+        return studentList;
+    }
+
+    public List<String> readStudents(File file) throws Docx4JException, JAXBException {
         studentList = new ArrayList<>();
-        File doc = new File(file);
-        WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(doc);
+        WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(file);
         MainDocumentPart mainDocumentPart = wordMLPackage.getMainDocumentPart();
         String textNodesXPath = "//w:p";
         List<Object> textNodes = mainDocumentPart
@@ -219,6 +226,18 @@ public class DocxReader {
         numPr.setIlvl(new PPrBase.NumPr.Ilvl());
         numPr.getIlvl().setVal(BigInteger.valueOf(iLvl));
         return numPr;
+    }
+
+    public File createFile(String name) {
+        try {
+            File questionsFile = new File(name);
+            questionsFile.createNewFile();
+            return questionsFile;
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

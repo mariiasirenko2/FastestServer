@@ -12,9 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,13 +48,13 @@ public class TestController {
 
     @PostMapping("/profile/{idUser}/GenerateTest")
     public void generateTest(@RequestParam(value = "testName") String testName,
-                             @RequestParam(value = "questionFile") String questionFile,
-                             @RequestParam(value = "studentFile") String studentFile,
-                             @PathVariable(value = "idUser") int idUser) throws JAXBException, Docx4JException {
+                             @RequestParam(value = "questionFile") MultipartFile questionMultipartFile,
+                             @RequestParam(value = "studentFile") MultipartFile studentMultipartFile,
+                             @PathVariable(value = "idUser") int idUser) throws JAXBException, Docx4JException, IOException {
         Test test = new Test(testName, userService.getUserById(idUser));
-        test.setQuestions(testService.readQuestions(questionFile));
+        test.setQuestions(testService.readQuestions(questionMultipartFile));
         test.setQuestionsKeys();
-        test.setStudents(testService.readStudents(studentFile));
+        test.setStudents(testService.readStudents(studentMultipartFile));
         testService.addTest(test);
     }
 
