@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "answers")
@@ -33,5 +34,17 @@ public class Answer {
         this.text = text;
         this.isRight = isRight;
         this.question = question;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Answer answer = (Answer) o;
+        return isRight == answer.isRight;
+    }
+
+    public Answer(boolean isRight) {
+        this.isRight = isRight;
     }
 }

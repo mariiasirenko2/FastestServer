@@ -24,7 +24,6 @@ public class DocxReader {
     List<Question> questionList;
     List<String> studentList;
     Question lastQuestion;
-
     ObjectFactory factory;
 
     public DocxReader() {
@@ -96,8 +95,8 @@ public class DocxReader {
         NumberingDefinitionsPart numberingDefinitionsPart = new NumberingDefinitionsPart();
         numberingDefinitionsPart.setContents(getNumbering());
         mainDocumentPart.addTargetPart(numberingDefinitionsPart);
-
         /////////////////////////////////////////////////////
+
         for (Question question: questions) {
             P questionParagraph = factory.createP();
             R questionRun = factory.createR();

@@ -58,24 +58,16 @@ public class TestController {
         testService.addTest(test);
     }
 
-    @GetMapping("/profile/{idUser}/Tests/{idTest}/Variants")
+    @PostMapping("/profile/{idUser}/Tests/{idTest}/Variants")
     public List<Question> getTestQuestions(@PathVariable(value = "idTest") int idTest) throws Docx4JException, JAXBException {
-        DocxReader docxReader = new DocxReader();
         Test test = testService.getTestById(idTest);
-        docxReader.generateVariants((List) test.getQuestions(), test.getStudents());
+        testService.generateVariants(test);
+        //DocxReader docxReader = new DocxReader();
+       // docxReader.generateVariants((List) test.getQuestions(), test.getStudents());
         return (List) test.getQuestions();
+
     }
 
-    /*@PostMapping("/profile/{idUser}/GenerateTest")
-    public void generateTest(@RequestParam(value = "testName") String testName,
-                             @RequestParam(value = "questionFile") File questionFile,
-                             //  @RequestParam(value = "studentFile") String studentFile,
-                             @PathVariable(value = "idUser") int idUser) throws JAXBException, Docx4JException {
-        Test test = new Test(testName, "test.docx", userService.getUserById(idUser));
-        test.setQuestions(questionService.readQuestions(questionFile));
-        test.setQuestionsKeys();
-        testService.addTest(test);
-    }*/
 
 
 }

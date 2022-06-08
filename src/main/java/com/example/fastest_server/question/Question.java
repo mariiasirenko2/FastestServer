@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -36,8 +37,12 @@ public class Question {
     private Collection<Answer> answers;
 
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<VariantQuestion> variantQuestions;
+
+    public void addVariantQuestion(VariantQuestion variantQuestion) {
+        variantQuestions.add(variantQuestion);
+    }
 
     public void addAnswer(Answer answer) {
         answers.add(answer);
@@ -48,4 +53,24 @@ public class Question {
         this.answers = answers;
     }
 
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return id == question.id && text.equals(question.text) && test.equals(question.test) && answers.equals(question.answers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, text, test, answers);
+    }
 }
