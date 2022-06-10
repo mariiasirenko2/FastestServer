@@ -41,8 +41,6 @@ public class TestService {
         testRepository.saveAndFlush(test);
     }
 
-
-
     public void generateVariants(Test test) {
         List<Question> questionList = (List) test.getQuestions();
         List<String> studentList = new ArrayList<>(Arrays.asList(test.getStudents()));
@@ -103,6 +101,10 @@ public class TestService {
     }
 
 
-
-
+    public List<Variant> generateVariantsFile(int idTest) throws Docx4JException {
+        List<Variant> variantList = variantRepository.findByTestId(idTest);
+        DocxReader docxReader = new DocxReader();
+        docxReader.generateQuestionDoc(variantList);
+        return variantList;
+    }
 }

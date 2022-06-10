@@ -1,6 +1,8 @@
 package com.example.fastest_server.question;
 
 import com.example.fastest_server.answer.Answer;
+import com.example.fastest_server.variant.Variant;
+import com.example.fastest_server.variantquestion.VariantQuestion;
 import org.docx4j.jaxb.Context;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.exceptions.InvalidFormatException;
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class DocxReader {
 
@@ -126,6 +129,71 @@ public class DocxReader {
                 answerParagraph.getPPr().getJc().setVal(JcEnumeration.BOTH);
                 mainDocumentPart.getContent().add(answerParagraph);
             }
+        }
+        File exportFile = new File("welcome.docx");
+        wordPackage.save(exportFile);
+    }
+
+    public void generateQuestionDoc(List<Variant> variantList) throws Docx4JException {
+        WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
+        MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
+        NumberingDefinitionsPart numberingDefinitionsPart = new NumberingDefinitionsPart();
+        numberingDefinitionsPart.setContents(getNumbering());
+        mainDocumentPart.addTargetPart(numberingDefinitionsPart);
+        /////////////////////////////////////////////////////
+        for (Variant variant: variantList) {
+            Set<VariantQuestion> questionSet = variant.getVariantQuestions();
+            P nameParagraph = factory.createP();
+            R nameRun = factory.createR();
+            Text nameText = factory.createText();
+            nameText.setValue(variant.getStudentName());
+            PPr namePPr = factory.createPPr();
+            nameRun.setRPr(gerFontProperty("Times New Roman", 14));
+            nameRun.getRPr().setB(new BooleanDefaultTrue());
+            nameParagraph.setPPr(namePPr);
+            nameParagraph.getPPr().setJc(new Jc());
+            nameParagraph.getPPr().getJc().setVal(JcEnumeration.CENTER);
+            nameRun.getContent().add(nameText);
+            nameParagraph.getContent().add(nameRun);
+            mainDocumentPart.getContent().add(nameParagraph);
+            for  (VariantQuestion variantQuestion: questionSet) {
+                Question question = variantQuestion.getQuestion();
+                P questionParagraph = factory.createP();
+                R questionRun = factory.createR();
+                Text questionText = factory.createText();
+                questionText.setValue(question.getText());
+                questionRun.setRPr(gerFontProperty("Times New Roman", 14));
+                questionRun.getContent().add(questionText);
+                questionParagraph.getContent().add(questionRun);
+                PPr questionPPr = factory.createPPr();
+                questionPPr.setNumPr(getNumProperty(1, 0));
+                questionParagraph.setPPr(questionPPr);
+                questionParagraph.getPPr().setJc(new Jc());
+                questionParagraph.getPPr().getJc().setVal(JcEnumeration.BOTH);
+                mainDocumentPart.getContent().add(questionParagraph);
+                for (Answer answer : question.getAnswers()) {
+                    P answerParagraph = factory.createP();
+                    R answerRun = factory.createR();
+                    Text answerText = factory.createText();
+                    answerText.setValue(answer.getText());
+                    answerRun.getContent().add(answerText);
+                    answerRun.setRPr(gerFontProperty("Times New Roman", 14));
+                    answerParagraph.getContent().add(answerRun);
+                    PPr answerPPr = factory.createPPr();
+                    answerPPr.setNumPr(getNumProperty(1, 1));
+                    answerParagraph.setPPr(answerPPr);
+                    answerParagraph.getPPr().setJc(new Jc());
+                    answerParagraph.getPPr().getJc().setVal(JcEnumeration.BOTH);
+                    mainDocumentPart.getContent().add(answerParagraph);
+                }
+            }
+            P breakParagraph = factory.createP();
+            R breakRun = factory.createR();
+            Br breakBr = factory.createBr();
+            breakBr.setType(STBrType.PAGE);
+            breakRun.getContent().add(breakBr);
+            breakParagraph.getContent().add(breakRun);
+            mainDocumentPart.getContent().add(breakParagraph);
         }
         File exportFile = new File("welcome.docx");
         wordPackage.save(exportFile);

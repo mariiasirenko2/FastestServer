@@ -7,6 +7,7 @@ import com.example.fastest_server.question.Question;
 import com.example.fastest_server.question.QuestionService;
 import com.example.fastest_server.user.User;
 import com.example.fastest_server.user.UserService;
+import com.example.fastest_server.variant.Variant;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -59,13 +60,14 @@ public class TestController {
     }
 
     @PostMapping("/profile/{idUser}/Tests/{idTest}/Variants")
-    public List<Question> getTestQuestions(@PathVariable(value = "idTest") int idTest) throws Docx4JException, JAXBException {
+    void generateVariants(@PathVariable(value = "idTest") int idTest) {
         Test test = testService.getTestById(idTest);
         testService.generateVariants(test);
-        //DocxReader docxReader = new DocxReader();
-       // docxReader.generateVariants((List) test.getQuestions(), test.getStudents());
-        return (List) test.getQuestions();
+    }
 
+    @GetMapping("/profile/{idUser}/Tests/{idTest}/Documents")
+    public List<Variant> getVariants(@PathVariable(value = "idTest") int idTest) throws Docx4JException, JAXBException {
+        return testService.generateVariantsFile(idTest);
     }
 
 
