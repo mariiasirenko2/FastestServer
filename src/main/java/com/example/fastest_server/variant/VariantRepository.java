@@ -10,7 +10,7 @@ public interface VariantRepository extends JpaRepository<Variant, Integer> {
 
     @Query(value = "SELECT * FROM variants WHERE id IN (" +
             "SELECT variant_id FROM variant_question WHERE question_id IN " +
-            "(SELECT id FROM questions WHERE test_id = :idTest))", nativeQuery = true)
+            "(SELECT id FROM questions WHERE test_id = :idTest)) ORDER BY student_name", nativeQuery = true)
     public List<Variant> findByTestId(@Param("idTest") int idTest);
 
 }

@@ -8,12 +8,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table (name = "variant_question")
 @Data
 @NoArgsConstructor
-public class VariantQuestion {
+public class VariantQuestion implements Comparable<VariantQuestion>{
     @EmbeddedId
     private VariantQuestionKey id;
 
@@ -31,7 +32,7 @@ public class VariantQuestion {
 
 
     @Column (name = "question_number")
-    private int questionNumber;
+    private Integer questionNumber;
 
     @Column (name = "letter_answer")
     @Enumerated(EnumType.STRING)
@@ -44,4 +45,21 @@ public class VariantQuestion {
         this.id = new VariantQuestionKey(variant.getId(), question.getId());
     }
 
+    @Override
+    public int compareTo(VariantQuestion o) {
+        return Integer.compare(this.getQuestionNumber(), o.getQuestionNumber());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VariantQuestion that = (VariantQuestion) o;
+        return id.equals(that.id) && variant.equals(that.variant) && question.equals(that.question) && questionNumber.equals(that.questionNumber) && letterAnswer == that.letterAnswer;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, variant, question, questionNumber, letterAnswer);
+    }
 }

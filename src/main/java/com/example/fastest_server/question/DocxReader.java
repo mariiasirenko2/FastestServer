@@ -18,9 +18,7 @@ import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DocxReader {
 
@@ -92,57 +90,19 @@ public class DocxReader {
         return studentList;
     }
 
-    public void generateVariants(List<Question> questions, String[] students) throws Docx4JException, JAXBException {
-        WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
-        MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
-        NumberingDefinitionsPart numberingDefinitionsPart = new NumberingDefinitionsPart();
-        numberingDefinitionsPart.setContents(getNumbering());
-        mainDocumentPart.addTargetPart(numberingDefinitionsPart);
-        /////////////////////////////////////////////////////
-
-        for (Question question: questions) {
-            P questionParagraph = factory.createP();
-            R questionRun = factory.createR();
-            Text questionText = factory.createText();
-            questionText.setValue(question.getText());
-            questionRun.setRPr(gerFontProperty("Times New Roman", 14));
-            questionRun.getContent().add(questionText);
-            questionParagraph.getContent().add(questionRun);
-            PPr questionPPr = factory.createPPr();
-            questionPPr.setNumPr(getNumProperty(1, 0));
-            questionParagraph.setPPr(questionPPr);
-            questionParagraph.getPPr().setJc(new Jc());
-            questionParagraph.getPPr().getJc().setVal(JcEnumeration.BOTH);
-            mainDocumentPart.getContent().add(questionParagraph);
-            for (Answer answer : question.getAnswers()) {
-                P answerParagraph = factory.createP();
-                R answerRun = factory.createR();
-                Text answerText = factory.createText();
-                answerText.setValue(answer.getText());
-                answerRun.getContent().add(answerText);
-                answerRun.setRPr(gerFontProperty("Times New Roman", 14));
-                answerParagraph.getContent().add(answerRun);
-                PPr answerPPr = factory.createPPr();
-                answerPPr.setNumPr(getNumProperty(1, 1));
-                answerParagraph.setPPr(answerPPr);
-                answerParagraph.getPPr().setJc(new Jc());
-                answerParagraph.getPPr().getJc().setVal(JcEnumeration.BOTH);
-                mainDocumentPart.getContent().add(answerParagraph);
-            }
-        }
-        File exportFile = new File("welcome.docx");
-        wordPackage.save(exportFile);
-    }
-
     public void generateQuestionDoc(List<Variant> variantList) throws Docx4JException {
+
         WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
         MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
         NumberingDefinitionsPart numberingDefinitionsPart = new NumberingDefinitionsPart();
-        numberingDefinitionsPart.setContents(getNumbering());
+        Numbering numbering = factory.createNumbering();
+        numberingDefinitionsPart.setContents(numbering);
+
         mainDocumentPart.addTargetPart(numberingDefinitionsPart);
+        int idCounter = 1;
         /////////////////////////////////////////////////////
         for (Variant variant: variantList) {
-            Set<VariantQuestion> questionSet = variant.getVariantQuestions();
+            SortedSet<VariantQuestion> questionSet = new TreeSet<>(variant.getVariantQuestions());
             P nameParagraph = factory.createP();
             R nameRun = factory.createR();
             Text nameText = factory.createText();
@@ -156,6 +116,17 @@ public class DocxReader {
             nameRun.getContent().add(nameText);
             nameParagraph.getContent().add(nameRun);
             mainDocumentPart.getContent().add(nameParagraph);
+
+            Numbering.Num num = factory.createNumberingNum();
+            num.setNumId(BigInteger.valueOf(idCounter));
+            Numbering.Num.AbstractNumId abstractNumId = factory.createNumberingNumAbstractNumId();
+            Numbering.AbstractNum abstractNum = getAbstractNumbering(idCounter);
+            numbering.getAbstractNum().add(abstractNum);
+            abstractNumId.setVal(BigInteger.valueOf(idCounter));
+            num.setAbstractNumId(abstractNumId);
+            numbering.getNum().add(num);
+            numbering.getAbstractNum().add(abstractNum);
+
             for  (VariantQuestion variantQuestion: questionSet) {
                 Question question = variantQuestion.getQuestion();
                 P questionParagraph = factory.createP();
@@ -166,7 +137,7 @@ public class DocxReader {
                 questionRun.getContent().add(questionText);
                 questionParagraph.getContent().add(questionRun);
                 PPr questionPPr = factory.createPPr();
-                questionPPr.setNumPr(getNumProperty(1, 0));
+                questionPPr.setNumPr(getNumProperty(idCounter, 0));
                 questionParagraph.setPPr(questionPPr);
                 questionParagraph.getPPr().setJc(new Jc());
                 questionParagraph.getPPr().getJc().setVal(JcEnumeration.BOTH);
@@ -180,7 +151,7 @@ public class DocxReader {
                     answerRun.setRPr(gerFontProperty("Times New Roman", 14));
                     answerParagraph.getContent().add(answerRun);
                     PPr answerPPr = factory.createPPr();
-                    answerPPr.setNumPr(getNumProperty(1, 1));
+                    answerPPr.setNumPr(getNumProperty(idCounter, 1));
                     answerParagraph.setPPr(answerPPr);
                     answerParagraph.getPPr().setJc(new Jc());
                     answerParagraph.getPPr().getJc().setVal(JcEnumeration.BOTH);
@@ -194,17 +165,16 @@ public class DocxReader {
             breakRun.getContent().add(breakBr);
             breakParagraph.getContent().add(breakRun);
             mainDocumentPart.getContent().add(breakParagraph);
+            idCounter++;
         }
         File exportFile = new File("welcome.docx");
         wordPackage.save(exportFile);
     }
 
 
-    private Numbering getNumbering() {
-        BigInteger listStyleId = BigInteger.valueOf(1);
-        Numbering numbering = factory.createNumbering();
-        Numbering.Num num = factory.createNumberingNum();
-        num.setNumId(listStyleId);
+    private Numbering.AbstractNum getAbstractNumbering(int abstractNumIdValue) {
+
+        BigInteger listStyleId = BigInteger.valueOf(abstractNumIdValue);
         Numbering.AbstractNum abstractNum = factory.createNumberingAbstractNum();
         abstractNum.setAbstractNumId(listStyleId);
         abstractNum.setMultiLevelType(new Numbering.AbstractNum.MultiLevelType());
@@ -237,7 +207,6 @@ public class DocxReader {
         questionInd.setLeft(BigInteger.valueOf(720));
         questionInd.setHanging(BigInteger.valueOf(360));
         abstractNum.getLvl().add(questionLvl);
-
         Lvl answerLvl = factory.createLvl();
         answerLvl.setIlvl(BigInteger.ONE);
         NumFmt answerNumFmt = factory.createNumFmt();
@@ -266,13 +235,9 @@ public class DocxReader {
         answerInd.setLeft(BigInteger.valueOf(1080));
         answerInd.setHanging(BigInteger.valueOf(360));
         abstractNum.getLvl().add(answerLvl);
-
         Numbering.Num.AbstractNumId abstractNumId = factory.createNumberingNumAbstractNumId();
         abstractNumId.setVal(listStyleId);
-        num.setAbstractNumId(abstractNumId);
-        numbering.getNum().add(num);
-        numbering.getAbstractNum().add(abstractNum);
-        return numbering;
+        return abstractNum;
     }
 
     private RPr gerFontProperty(String font, long size) {
