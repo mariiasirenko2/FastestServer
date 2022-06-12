@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/fastest/signup","/fastest/login")
+                    .antMatchers("/fastest/signup","/fastest/profile")
                     .permitAll()
                 .antMatchers("/profile/**")
                 .hasAnyRole("USER")
