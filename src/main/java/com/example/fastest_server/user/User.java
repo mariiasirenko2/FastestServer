@@ -1,6 +1,7 @@
 package com.example.fastest_server.user;
 
 import com.example.fastest_server.test.Test;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -31,6 +32,7 @@ public class User  {
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Collection<Test> tests;
 

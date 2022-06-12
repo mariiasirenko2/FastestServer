@@ -43,6 +43,7 @@ public class TestService {
 
     public void generateVariants(Test test) {
         List<Question> questionList = (List) test.getQuestions();
+
         List<String> studentList = new ArrayList<>(Arrays.asList(test.getStudents()));
         for (String student: studentList) {
             Variant variant = new Variant(student);
@@ -74,8 +75,13 @@ public class TestService {
         return testRepository.getById(id);
     }
 
-    public List<Test> getTestByOwner(User owner) {
-        return testRepository.findByOwner(owner);
+    public List<TestNameId> getTestByOwner(User owner) {
+        List<Test> t = testRepository.findByOwner(owner);
+        List<TestNameId> tmi= new ArrayList<>();
+        for(Test i:t){
+            tmi.add(new TestNameId(i.getTestName(),i.getId()));
+        }
+        return tmi;
     }
 
     public List<Question> readQuestions(MultipartFile questionsMultipartFile) throws JAXBException, Docx4JException, IOException {
