@@ -68,7 +68,6 @@ public class TestController {
         test.setQuestionsKeys();
         test.setStudents(testService.readStudents(studentMultipartFile));
         testService.addTest(test);
-
         testService.generateVariants(test);
 
     }
@@ -93,6 +92,11 @@ public class TestController {
     @GetMapping("/profile/{idUser}/Tests/{idTest}/Documents")
     public List<Variant> getVariants(@PathVariable(value = "idTest") int idTest) throws Docx4JException, JAXBException {
         return testService.generateVariantsFile(idTest);
+    }
+
+    @GetMapping("/profile/{idUser}/Tests/{idTest}/Blanks")
+    public void getBlanks(@PathVariable(value = "idTest") int idTest) throws Exception {
+        testService.generateBlanks(idTest);
     }
 
 

@@ -113,4 +113,10 @@ public class TestService {
         docxReader.generateQuestionDoc(variantList);
         return variantList;
     }
+
+    public void generateBlanks(int idTest) throws Exception {
+        List<Variant> variantList = variantRepository.findByTestId(idTest);
+        DocxReader docxReader = new DocxReader();
+        docxReader.generateBlanks(variantList);
+    }
 }

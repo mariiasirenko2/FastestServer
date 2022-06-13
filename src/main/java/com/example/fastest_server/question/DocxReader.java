@@ -3,21 +3,34 @@ package com.example.fastest_server.question;
 import com.example.fastest_server.answer.Answer;
 import com.example.fastest_server.variant.Variant;
 import com.example.fastest_server.variantquestion.VariantQuestion;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import org.docx4j.dml.wordprocessingDrawing.Inline;
 import org.docx4j.jaxb.Context;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.NumberingDefinitionsPart;
+
 import org.docx4j.openpackaging.parts.WordprocessingML.StyleDefinitionsPart;
 import org.docx4j.wml.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
 import java.util.*;
 
 public class DocxReader {
@@ -127,7 +140,7 @@ public class DocxReader {
             numbering.getNum().add(num);
             numbering.getAbstractNum().add(abstractNum);
 
-            for  (VariantQuestion variantQuestion: questionSet) {
+            for (VariantQuestion variantQuestion: questionSet) {
                 Question question = variantQuestion.getQuestion();
                 P questionParagraph = factory.createP();
                 R questionRun = factory.createR();
@@ -167,10 +180,101 @@ public class DocxReader {
             mainDocumentPart.getContent().add(breakParagraph);
             idCounter++;
         }
-        File exportFile = new File("welcome.docx");
+        File exportFile = new File("variants.docx");
         wordPackage.save(exportFile);
     }
 
+    public byte[] generateQR(String data, String charset, Map map, int h, int w) throws WriterException, IOException
+    {
+        BitMatrix matrix = new MultiFormatWriter().encode(new String(data.getBytes(charset), charset), BarcodeFormat.QR_CODE, w, h);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(MatrixToImageWriter.toBufferedImage(matrix), "png", baos);
+        return baos.toByteArray();
+    }
+
+
+
+
+    public void generateBlanks(List<Variant> variantList) throws Exception {
+        WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
+        MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
+        Body body = mainDocumentPart.getContents().getBody();
+        body.setSectPr(setDocumentBorders(425, 1440, 425, 1440));
+        File image = new File("blank.png" );
+        for (Variant variant: variantList) {
+            Map<EncodeHintType, ErrorCorrectionLevel> hashMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();
+            //generates QR code with Low level(L) error correction capability
+            hashMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+
+            P testParagraph = factory.createP();
+            R testRun = factory.createR();
+            Text testText = factory.createText();
+            String name = ((VariantQuestion) (variant.getVariantQuestions().toArray()[0])).getQuestion().getTest().getTestName();
+            testText.setValue("Тест: " + ((VariantQuestion) (variant.getVariantQuestions().toArray()[0])).getQuestion().getTest().getTestName());
+            PPr namePPr = factory.createPPr();
+            testRun.setRPr(gerFontProperty("Times New Roman", 14));
+            testRun.getRPr().setB(new BooleanDefaultTrue());
+            testParagraph.setPPr(namePPr);
+            testParagraph.getPPr().setJc(new Jc());
+            testParagraph.getPPr().getJc().setVal(JcEnumeration.LEFT);
+            testRun.getContent().add(testText);
+            testParagraph.getContent().add(testRun);
+            body.getContent().add(testParagraph);
+            P nameParagraph = factory.createP();
+            R nameRun = factory.createR();
+            Text nameText = factory.createText();
+            nameText.setValue("Студент: " + variant.getStudentName());
+            PPr testPPr = factory.createPPr();
+            nameRun.setRPr(gerFontProperty("Times New Roman", 14));
+            nameRun.getRPr().setB(new BooleanDefaultTrue());
+            nameParagraph.setPPr(namePPr);
+            nameParagraph.getPPr().setJc(new Jc());
+            nameParagraph.getPPr().getJc().setVal(JcEnumeration.LEFT);
+            nameRun.getContent().add(nameText);
+            nameParagraph.getContent().add(nameRun);
+            body.getContent().add(nameParagraph);
+
+            BinaryPartAbstractImage qrPart = BinaryPartAbstractImage
+                    .createImagePart(wordPackage, generateQR(String.valueOf(variant.getId()), "UTF-8", hashMap, 100, 100));
+            Inline qrInline = qrPart.createImageInline(
+                    "123", "Alt Text", 1, 2, false);
+            P qrParagraph = addImageToParagraph(qrInline);
+            body.getContent().add(qrParagraph);
+
+            byte[] fileContent = Files.readAllBytes(image.toPath());
+            BinaryPartAbstractImage imagePart = BinaryPartAbstractImage
+                    .createImagePart(wordPackage, fileContent);
+            Inline inline = imagePart.createImageInline(
+                    "ElPlyCongroo", "Alt Text", 1, 2, 5923915, 7065250, false);
+            P imageParagraph = addImageToParagraph(inline);
+            body.getContent().add(imageParagraph);
+        }
+        File exportFile = new File("blanks.docx");
+        wordPackage.save(exportFile);
+
+    }
+
+    private P addImageToParagraph(Inline inline) {
+        ObjectFactory factory = new ObjectFactory();
+        P p = factory.createP();
+        R r = factory.createR();
+        p.getContent().add(r);
+        Drawing drawing = factory.createDrawing();
+        r.getContent().add(drawing);
+        drawing.getAnchorOrInline().add(inline);
+        return p;
+    }
+
+    private SectPr setDocumentBorders(long top, long right, long bottom, long left) {
+        SectPr sectPr = factory.createSectPr();
+        SectPr.PgMar pgMar = factory.createSectPrPgMar();
+        sectPr.setPgMar(pgMar);
+        pgMar.setTop( BigInteger.valueOf(top));
+        pgMar.setRight( BigInteger.valueOf(right));
+        pgMar.setBottom( BigInteger.valueOf(bottom));
+        pgMar.setLeft( BigInteger.valueOf(left));
+        return sectPr;
+    }
 
     private Numbering.AbstractNum getAbstractNumbering(int abstractNumIdValue) {
 
@@ -244,6 +348,7 @@ public class DocxReader {
         RPr rPr = factory.createRPr();
         RFonts rFonts = factory.createRFonts();
         rFonts.setHAnsi(font);
+        rFonts.setAscii(font);
         rPr.setRFonts(rFonts);
         HpsMeasure hpsMeasure = factory.createHpsMeasure();
         hpsMeasure.setVal(BigInteger.valueOf(size * 2));
