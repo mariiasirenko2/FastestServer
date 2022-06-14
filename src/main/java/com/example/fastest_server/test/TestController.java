@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
@@ -95,8 +96,8 @@ public class TestController {
     }
 
     @GetMapping("/profile/{idUser}/Tests/{idTest}/Blanks")
-    public void getBlanks(@PathVariable(value = "idTest") int idTest) throws Exception {
-        testService.generateBlanks(idTest);
+    public InputStream getBlanks(@PathVariable(value = "idTest") int idTest) throws Exception {
+        return testService.generateBlanks(idTest);
     }
 
 

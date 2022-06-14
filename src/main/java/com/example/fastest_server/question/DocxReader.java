@@ -10,6 +10,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import org.apache.http.entity.ContentType;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
 import org.docx4j.jaxb.Context;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -21,14 +22,13 @@ import org.docx4j.openpackaging.parts.WordprocessingML.NumberingDefinitionsPart;
 
 import org.docx4j.openpackaging.parts.WordprocessingML.StyleDefinitionsPart;
 import org.docx4j.wml.*;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.util.*;
@@ -195,7 +195,7 @@ public class DocxReader {
 
 
 
-    public void generateBlanks(List<Variant> variantList) throws Exception {
+    public InputStream generateBlanks(List<Variant> variantList) throws Exception {
         WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
         MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
         Body body = mainDocumentPart.getContents().getBody();
@@ -249,8 +249,13 @@ public class DocxReader {
             P imageParagraph = addImageToParagraph(inline);
             body.getContent().add(imageParagraph);
         }
-        File exportFile = new File("blanks.docx");
+        File exportFile = new File("blanks" + String.valueOf(((VariantQuestion) (variantList.get(0).getVariantQuestions().toArray()[0])).getQuestion().getTest().getId()) + ".docx");
         wordPackage.save(exportFile);
+        InputStream inputStream = new FileInputStream(exportFile);
+      //  MultipartFile multipartFile = new MockMultipartFile("blanks.docx", "blanks.docx", "multipart/form-data", inputStream);
+        MultipartFile multipartFile1 = new MockMultipartFile("blank.docx", inputStream);
+        return inputStream;
+
 
     }
 

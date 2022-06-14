@@ -11,16 +11,15 @@ import com.example.fastest_server.variantquestion.VariantQuestion;
 import com.example.fastest_server.variantquestion.VariantQuestionKey;
 import com.example.fastest_server.variantquestion.VariantQuestionRepository;
 import lombok.AllArgsConstructor;
+import org.apache.http.entity.ContentType;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.*;
 
 @Service
@@ -114,9 +113,9 @@ public class TestService {
         return variantList;
     }
 
-    public void generateBlanks(int idTest) throws Exception {
+    public InputStream generateBlanks(int idTest) throws Exception {
         List<Variant> variantList = variantRepository.findByTestId(idTest);
         DocxReader docxReader = new DocxReader();
-        docxReader.generateBlanks(variantList);
+        return docxReader.generateBlanks(variantList);
     }
 }
