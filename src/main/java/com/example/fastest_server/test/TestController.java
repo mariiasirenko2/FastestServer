@@ -99,6 +99,12 @@ public class TestController {
         return testService.generateBlanks(idTest);
     }
 
+    @GetMapping("/profile/{idUser}/Tests/{idTest}/Results")
+    public @ResponseBody byte[] getResults(@PathVariable(value = "idUser")int idUser,
+                                          @PathVariable(value = "idTest") int idTest) throws Exception {
+        return testService.getResults(idTest);
+    }
+
 
 
 

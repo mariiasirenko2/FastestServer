@@ -119,4 +119,10 @@ public class TestService {
         DocxReader docxReader = new DocxReader();
         return docxReader.generateBlanks(variantList);
     }
+
+    public byte[] getResults(int idTest) throws Exception {
+        List<Variant> variantList = variantRepository.findByTestId(idTest);
+        DocxReader docxReader = new DocxReader();
+        return docxReader.generateResults(variantList);
+    }
 }

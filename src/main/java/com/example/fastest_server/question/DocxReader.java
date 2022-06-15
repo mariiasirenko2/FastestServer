@@ -1,5 +1,4 @@
 package com.example.fastest_server.question;
-
 import com.example.fastest_server.answer.Answer;
 import com.example.fastest_server.variant.Variant;
 import com.example.fastest_server.variantquestion.VariantQuestion;
@@ -10,23 +9,15 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import org.apache.http.entity.ContentType;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
 import org.docx4j.jaxb.Context;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
-import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.NumberingDefinitionsPart;
-
-import org.docx4j.openpackaging.parts.WordprocessingML.StyleDefinitionsPart;
 import org.docx4j.wml.*;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.imageio.ImageIO;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.math.BigInteger;
@@ -266,6 +257,8 @@ public class DocxReader {
 
     }
 
+
+
     private P addImageToParagraph(Inline inline) {
         ObjectFactory factory = new ObjectFactory();
         P p = factory.createP();
@@ -390,5 +383,16 @@ public class DocxReader {
     }
 
 
-
+    public byte[] generateResults(List<Variant> variantList) throws Docx4JException {
+        WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
+        MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
+        for (Variant variant: variantList) {
+            mainDocumentPart.addParagraphOfText(variant.getStudentName() + "    " + String.valueOf(variant.getMark()));
+        }
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        wordPackage.save(outputStream);
+        File exportFile = new File("results.docx");
+        wordPackage.save(exportFile);
+        return outputStream.toByteArray();
+    }
 }
