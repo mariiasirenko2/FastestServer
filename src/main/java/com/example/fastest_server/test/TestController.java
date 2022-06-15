@@ -80,11 +80,10 @@ public class TestController {
         return variantQuestionService.getAnswers(idVariant);
     }
 
-    @PostMapping("/profile/{idUser}/Tests/{idTest}/Variant/{idVariant}")
+    @PostMapping("/profile/{idUser}/Variant/{idVariant}")
     public void setMarkToVariant(@PathVariable(value = "idUser") int idUser,
-                                 @PathVariable(value = "idTest") int idTest,
                                  @PathVariable(value = "idVariant") int idVariant,
-                                 @RequestParam(value = "mark") int mark){
+                                 @RequestBody int mark){
         variantService.setMarkToVariant(idVariant,mark);
     }
 
