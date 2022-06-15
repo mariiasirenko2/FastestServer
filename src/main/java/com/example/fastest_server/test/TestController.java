@@ -53,8 +53,8 @@ public class TestController {
 
     }
 
-    @GetMapping("/profile/{idUser}/Tests/{idTest}/Variants")
-    public List<Variant> getVariants(@PathVariable(value = "idUser") int idUser,
+    @GetMapping("/profile/{idUser}/Tests/{idTest}/V")
+    public List<Variant> getVariantsOfTest(@PathVariable(value = "idUser") int idUser,
                                      @PathVariable(value = "idTest") int idTest){
         return variantService.getVariantsList(idTest);
     }
@@ -74,14 +74,12 @@ public class TestController {
     }
 
     //WORk
-    @GetMapping("/profile/{idUser}/Tests/{idTest}/Variant/{idVariant}")
+    @GetMapping("/profile/{idUser}/Variant/{idVariant}/T")
     public List<Chars> getAnswer(@PathVariable(value = "idUser") int idUser,
-                                 @PathVariable(value = "idTest") int idTest,
                                  @PathVariable(value = "idVariant") int idVariant){
         return variantQuestionService.getAnswers(idVariant);
     }
 
-    //TODO REWRITE
     @PostMapping("/profile/{idUser}/Tests/{idTest}/Variant/{idVariant}")
     public void setMarkToVariant(@PathVariable(value = "idUser") int idUser,
                                  @PathVariable(value = "idTest") int idTest,
@@ -91,14 +89,18 @@ public class TestController {
     }
 
     @GetMapping("/profile/{idUser}/Tests/{idTest}/Documents")
-    public List<Variant> getVariants(@PathVariable(value = "idTest") int idTest) throws Docx4JException, JAXBException {
+    public @ResponseBody byte[] getVariants(@PathVariable(value = "idUser")int idUser,
+                                            @PathVariable(value = "idTest") int idTest) throws Docx4JException, JAXBException {
         return testService.generateVariantsFile(idTest);
     }
 
     @GetMapping("/profile/{idUser}/Tests/{idTest}/Blanks")
-    public InputStream getBlanks(@PathVariable(value = "idTest") int idTest) throws Exception {
+    public @ResponseBody byte[] getBlanks(@PathVariable(value = "idUser")int idUser,
+                                 @PathVariable(value = "idTest") int idTest) throws Exception {
         return testService.generateBlanks(idTest);
     }
+
+
 
 
 

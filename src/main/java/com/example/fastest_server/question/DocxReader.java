@@ -103,7 +103,7 @@ public class DocxReader {
         return studentList;
     }
 
-    public void generateQuestionDoc(List<Variant> variantList) throws Docx4JException {
+    public byte[] generateQuestionDoc(List<Variant> variantList) throws Docx4JException {
 
         WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
         MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
@@ -180,8 +180,10 @@ public class DocxReader {
             mainDocumentPart.getContent().add(breakParagraph);
             idCounter++;
         }
-        File exportFile = new File("variants.docx");
-        wordPackage.save(exportFile);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        wordPackage.save(outputStream);
+
+        return outputStream.toByteArray();
     }
 
     public byte[] generateQR(String data, String charset, Map map, int h, int w) throws WriterException, IOException
@@ -195,7 +197,7 @@ public class DocxReader {
 
 
 
-    public InputStream generateBlanks(List<Variant> variantList) throws Exception {
+    public byte[] generateBlanks(List<Variant> variantList) throws Exception {
         WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
         MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
         Body body = mainDocumentPart.getContents().getBody();
@@ -249,12 +251,17 @@ public class DocxReader {
             P imageParagraph = addImageToParagraph(inline);
             body.getContent().add(imageParagraph);
         }
-        File exportFile = new File("blanks" + String.valueOf(((VariantQuestion) (variantList.get(0).getVariantQuestions().toArray()[0])).getQuestion().getTest().getId()) + ".docx");
-        wordPackage.save(exportFile);
-        InputStream inputStream = new FileInputStream(exportFile);
+
+       // String name ="blanks" + String.valueOf(((VariantQuestion) (variantList.get(0).getVariantQuestions().toArray()[0])).getQuestion().getTest().getId()) + ".docx";
+      //  File exportFile = new File("/home/masha/"+ name);
+      //  wordPackage.save(exportFile);
+      //  InputStream inputStream = new FileInputStream(exportFile);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        wordPackage.save(outputStream);
       //  MultipartFile multipartFile = new MockMultipartFile("blanks.docx", "blanks.docx", "multipart/form-data", inputStream);
-        MultipartFile multipartFile1 = new MockMultipartFile("blank.docx", inputStream);
-        return inputStream;
+       // MultipartFile multipartFile1 = new MockMultipartFile("blank.docx", inputStream);
+        return outputStream.toByteArray();
+
 
 
     }

@@ -2,6 +2,8 @@ package com.example.fastest_server.variant;
 
 
 import com.example.fastest_server.variantquestion.VariantQuestion;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,6 +30,7 @@ public class Variant {
     @Column (name = "mark")
     private int mark;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<VariantQuestion>  variantQuestions;
 
