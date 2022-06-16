@@ -6,7 +6,7 @@ import org.docx4j.openpackaging.exceptions.Docx4JException;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 
-public interface DocxHandleable extends Handleable {
+interface DocxHandleable extends Handleable {
     <T extends Docx4JException> void handleDocx4JException(T e);
     <T extends IOException> void handleIOException(T e);
     <T extends WriterException> void handleWriterException(T e);

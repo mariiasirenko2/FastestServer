@@ -9,7 +9,7 @@ public class DocxStyler {
 
     private static final ObjectFactory factory = Context.getWmlObjectFactory();
 
-    protected static RPr setFontPropertyRPr(String font, long size) {
+    static RPr setFontPropertyRPr(String font, long size) {
         RPr rPr = factory.createRPr();
         RFonts rFonts = factory.createRFonts();
         rFonts.setHAnsi(font);
