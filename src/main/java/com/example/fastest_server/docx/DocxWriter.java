@@ -38,8 +38,8 @@ class DocxWriter {
         }
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         wordPackage.save(outputStream);
-        File exportFile = new File("results.docx");
-        wordPackage.save(exportFile);
+       // File exportFile = new File("results.docx");
+        //wordPackage.save(exportFile);
         return outputStream.toByteArray();
     }
 
@@ -80,8 +80,8 @@ class DocxWriter {
         }
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        File file = new File("blanks.docx");
-        wordPackage.save(file);
+        //File file = new File("blanks.docx");
+        //wordPackage.save(file);
         wordPackage.save(outputStream);
         return outputStream.toByteArray();
 
@@ -146,10 +146,9 @@ class DocxWriter {
             idCounter++;
         }
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        File file = new File("variants.docx");
-        wordPackage.save(file);
+        //File file = new File("variants.docx");
+        //wordPackage.save(file);
         wordPackage.save(outputStream);
-
         return outputStream.toByteArray();
     }
 
