@@ -60,7 +60,7 @@ public class TestController {
                                              @RequestParam(value = "questionFile") MultipartFile questionMultipartFile,
                                              @RequestParam(value = "studentFile") MultipartFile studentMultipartFile,
                                              @PathVariable(value = "idUser") Long idUser) throws JAXBException, Docx4JException, IOException {
-        Test test = new Test(testName, userService.getUserById(idUser));
+        Test test = new Test("Еуые", userService.getUserById(idUser));
         test.setQuestions(testService.readQuestions(questionMultipartFile));
         test.setQuestionsKeys();
         test.setStudents(testService.readStudents(studentMultipartFile));

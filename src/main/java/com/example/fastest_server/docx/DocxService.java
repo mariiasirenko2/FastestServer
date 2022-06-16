@@ -18,7 +18,7 @@ public class DocxService {
     @Autowired
     private DocxWriter docxWriter;
     @Autowired
-    DocxExceptionErrorHandler exceptionHandler;
+    private DocxExceptionErrorHandler exceptionHandler;
 
     public byte[] generateBlanks(List<Variant> variantList) {
         try {

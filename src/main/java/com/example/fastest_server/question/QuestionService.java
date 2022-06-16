@@ -15,13 +15,6 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    /*public List<Question> readQuestions(File file) throws JAXBException, Docx4JException {
-        QuestionReader questionReader = new QuestionReader(file);
-        return questionReader.getQuestionList();
-
-    }*/
-
-
     public void addQuestion(Question question) {
         questionRepository.saveAndFlush(question);
     }

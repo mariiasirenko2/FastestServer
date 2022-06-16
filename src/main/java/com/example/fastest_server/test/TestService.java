@@ -33,7 +33,7 @@ public class TestService {
     private final VariantRepository variantRepository;
 
     @Autowired
-    DocxService docxService;
+    private DocxService docxService;
     public void addTest(Test test) {
         testRepository.saveAndFlush(test);
     }
