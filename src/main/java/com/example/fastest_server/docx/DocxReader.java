@@ -14,7 +14,7 @@ import java.util.*;
 @Service
 class DocxReader {
 
-    public List<Question> readQuestions(InputStream file) throws Docx4JException, JAXBException {
+    List<Question> readQuestions(InputStream file) throws Docx4JException, JAXBException {
         List<Question> questionList = new ArrayList<>();
         Question lastQuestion = null;
         WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(file);
@@ -51,7 +51,7 @@ class DocxReader {
         return questionList;
     }
 
-    public List<String> readStudents(InputStream file) throws Docx4JException, JAXBException {
+    List<String> readStudents(InputStream file) throws Docx4JException, JAXBException {
         List<String> studentList = new ArrayList<>();
         WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(file);
         MainDocumentPart mainDocumentPart = wordMLPackage.getMainDocumentPart();
