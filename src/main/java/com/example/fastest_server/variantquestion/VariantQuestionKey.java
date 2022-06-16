@@ -15,10 +15,10 @@ import java.util.Objects;
 @Data
 public class VariantQuestionKey implements Serializable {
     @Column(name = "variant_id")
-    protected int variantId;
+    protected Long variantId;
 
     @Column(name = "question_id")
-    protected int questionId;
+    protected Long questionId;
 
     @Override
     public boolean equals(Object o) {

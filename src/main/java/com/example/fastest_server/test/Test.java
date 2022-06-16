@@ -18,7 +18,7 @@ public class Test {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     @Column (name = "test_name")
     private String testName;

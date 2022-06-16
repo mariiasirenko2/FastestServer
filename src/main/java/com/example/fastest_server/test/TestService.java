@@ -2,21 +2,17 @@ package com.example.fastest_server.test;
 
 import com.example.fastest_server.answer.Answer;
 import com.example.fastest_server.answer.Chars;
-import com.example.fastest_server.question.DocxReader;
+import com.example.fastest_server.docx.DocxService;
 import com.example.fastest_server.question.Question;
 import com.example.fastest_server.user.User;
 import com.example.fastest_server.variant.Variant;
 import com.example.fastest_server.variant.VariantRepository;
 import com.example.fastest_server.variantquestion.VariantQuestion;
-import com.example.fastest_server.variantquestion.VariantQuestionKey;
 import com.example.fastest_server.variantquestion.VariantQuestionRepository;
 import lombok.AllArgsConstructor;
-import org.apache.http.entity.ContentType;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.bind.JAXBException;
@@ -36,7 +32,8 @@ public class TestService {
     @Autowired
     private final VariantRepository variantRepository;
 
-
+    @Autowired
+    DocxService docxService;
     public void addTest(Test test) {
         testRepository.saveAndFlush(test);
     }
@@ -52,17 +49,11 @@ public class TestService {
             while (questionSet.size() < 20) {
                 questionSet.add(questionList.get((int) (Math.random() * (questionList.size() - 1))));
             }
-            for (Question question: questionSet) {
-                System.out.println(question.getText());
-            }
             int i = 1;
             for (Question question: questionSet) {
-                System.out.println("Iteration " + i);
                 VariantQuestion variantQuestion = new VariantQuestion(variant, question);
                 variantQuestion.setQuestionNumber(i++);
                 Chars[] chars = Chars.values();
-                int letter;
-                //variantQuestion.setLetterAnswer(chars[(int) 1 + (Math.random() * 3.5)]);
                 List<Answer> answerList = (List) question.getAnswers();
                 variantQuestion.setLetterAnswer(chars[answerList.indexOf(new Answer(true)) + 1]);
                 System.out.println(chars[answerList.indexOf(new Answer(true)) + 1]);
@@ -76,53 +67,40 @@ public class TestService {
     }
 
     public List<TestNameId> getTestByOwner(User owner) {
-        List<Test> t = testRepository.findByOwner(owner);
-        List<TestNameId> tmi= new ArrayList<>();
-        for(Test i:t){
-            tmi.add(new TestNameId(i.getTestName(),i.getId()));
+        List<Test> testList = testRepository.findByOwner(owner);
+        List<TestNameId> tni= new ArrayList<>();
+        for(Test test: testList){
+            tni.add(new TestNameId(test.getTestName(), test.getId()));
         }
-        return tmi;
+        return tni;
     }
 
-    public List<Question> readQuestions(MultipartFile questionsMultipartFile) throws JAXBException, Docx4JException, IOException {
-        DocxReader docxReader = new DocxReader();
-        File questionsFile = new File("testQuestion.docx");
-        try (OutputStream os = new FileOutputStream(questionsFile)) {
-            os.write(questionsMultipartFile.getBytes());
-        }
-        docxReader.readQuestions(questionsFile);
-        questionsFile.delete();
-        return docxReader.getQuestionList();
+    public List<Question> readQuestions(MultipartFile questionsMultipartFile) throws IOException {
+        InputStream questionsFile = questionsMultipartFile.getInputStream();
+        return docxService.readQuestions(questionsFile);
     }
 
-    public List<String> readStudents(MultipartFile studentsMultipartFile) throws JAXBException, Docx4JException, IOException {
-        DocxReader docxReader = new DocxReader();
-        File studentsFile = new File("testStudent.docx");
-        try (OutputStream os = new FileOutputStream(studentsFile)) {
-            os.write(studentsMultipartFile.getBytes());
-        }
-        docxReader.readStudents(studentsFile);
-        studentsFile.delete();
-        return docxReader.getStudentList();
+    //TODO: change file to the input stream
+    public List<String> readStudents(MultipartFile studentsMultipartFile) throws IOException {
+        InputStream studentsFile = studentsMultipartFile.getInputStream();
+        return docxService.readStudents(studentsFile);
     }
 
 
-    public byte[] generateVariantsFile(int idTest) throws Docx4JException {
+    public byte[] generateVariantsFile(Long idTest)  {
         List<Variant> variantList = variantRepository.findByTestId(idTest);
-        DocxReader docxReader = new DocxReader();
-        return  docxReader.generateQuestionDoc(variantList);
+        return  docxService.generateQuestionDoc(variantList);
 
     }
 
-    public  byte[] generateBlanks(int idTest) throws Exception {
+
+    public  byte[] generateBlanks(Long idTest) throws Exception {
         List<Variant> variantList = variantRepository.findByTestId(idTest);
-        DocxReader docxReader = new DocxReader();
-        return docxReader.generateBlanks(variantList);
+        return docxService.generateBlanks(variantList);
     }
 
-    public byte[] getResults(int idTest) throws Exception {
+    public byte[] getResults(Long idTest) throws Exception {
         List<Variant> variantList = variantRepository.findByTestId(idTest);
-        DocxReader docxReader = new DocxReader();
-        return docxReader.generateResults(variantList);
+        return docxService.generateResults(variantList);
     }
 }

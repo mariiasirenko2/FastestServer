@@ -4,9 +4,9 @@ public class TestNameId {
 
     //TODO :Это БОЛЬШУЩИЙ КОСТЫЛЬ
     private String name;
-    private int id;
+    private Long id;
 
-    public TestNameId(String name, int id) {
+    public TestNameId(String name, Long id) {
         this.name = name;
         this.id = id;
     }
@@ -19,11 +19,11 @@ public class TestNameId {
         this.name = name;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 }

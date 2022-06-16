@@ -22,13 +22,13 @@ public class Variant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     @Column (name = "student_name")
     private String studentName;
 
     @Column (name = "mark")
-    private int mark;
+    private Long mark;
 
     @JsonIgnore
     @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)

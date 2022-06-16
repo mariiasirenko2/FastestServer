@@ -12,7 +12,7 @@ import java.util.List;
 public interface VariantQuestionRepository extends JpaRepository<VariantQuestion,Integer> {
 
     @Query(value = "SELECT letter_answer FROM variant_question WHERE variant_id = :idVariant ORDER BY question_number", nativeQuery = true)
-     List<Chars> getVariantAnswers(@Param("idVariant") int idVariant);
+     List<Chars> getVariantAnswers(@Param("idVariant") Long idVariant);
 
 
 }

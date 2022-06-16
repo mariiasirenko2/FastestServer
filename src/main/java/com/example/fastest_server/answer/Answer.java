@@ -17,20 +17,20 @@ public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     @Column (name = "text")
     private String text;
 
     @Column (name = "is_right")
-    private boolean isRight;
+    private Boolean isRight;
 
     @ManyToOne (fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "question_id",nullable = false)
     @JsonIgnore
     private Question question;
 
-    public Answer(String text, boolean isRight, Question question) {
+    public Answer(String text, Boolean isRight, Question question) {
         this.text = text;
         this.isRight = isRight;
         this.question = question;
