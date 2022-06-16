@@ -27,7 +27,7 @@ class DocxWriter {
 
     private final ObjectFactory factory = Context.getWmlObjectFactory();
 
-    public byte[] generateResults(List<Variant> variantList) throws Docx4JException {
+    byte[] generateResults(List<Variant> variantList) throws Docx4JException {
         WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
         MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
         Body body = mainDocumentPart.getContents().getBody();
@@ -43,7 +43,7 @@ class DocxWriter {
         return outputStream.toByteArray();
     }
 
-    public byte[] generateBlanks(List<Variant> variantList) throws Exception {
+    byte[] generateBlanks(List<Variant> variantList) throws Exception {
         WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
         MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
         Body body = mainDocumentPart.getContents().getBody();
@@ -89,7 +89,7 @@ class DocxWriter {
 
     }
 
-    public byte[] generateQuestionDoc(List<Variant> variantList) throws Docx4JException {
+    byte[] generateQuestionDoc(List<Variant> variantList) throws Docx4JException {
 
         //TODO: find out how to separate lists from each other by Numbering without creating different AbstractNumberings
         WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
