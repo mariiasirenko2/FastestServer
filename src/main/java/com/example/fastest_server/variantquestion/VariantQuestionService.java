@@ -17,7 +17,7 @@ public class VariantQuestionService {
         variantQuestionRepository.saveAndFlush(variantQuestion);
     }
 
-    public List<Chars> getAnswers(Long variantId){
+    public List<Chars> getAnswers(int variantId){
         return variantQuestionRepository.getVariantAnswers(variantId);
     }
 
