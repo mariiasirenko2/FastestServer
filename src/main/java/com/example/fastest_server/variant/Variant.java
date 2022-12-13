@@ -2,7 +2,6 @@ package com.example.fastest_server.variant;
 
 
 import com.example.fastest_server.variantquestion.VariantQuestion;
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,15 +23,15 @@ public class Variant {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column (name = "student_name")
+    @Column(name = "student_name")
     private String studentName;
 
-    @Column (name = "mark")
+    @Column(name = "mark")
     private Long mark;
 
     @JsonIgnore
     @OneToMany(mappedBy = "variant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<VariantQuestion>  variantQuestions;
+    private Set<VariantQuestion> variantQuestions;
 
     public void addVariantQuestion(VariantQuestion variantQuestion) {
         variantQuestions.add(variantQuestion);

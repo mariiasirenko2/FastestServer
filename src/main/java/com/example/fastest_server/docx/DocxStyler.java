@@ -5,7 +5,7 @@ import org.docx4j.wml.*;
 
 import java.math.BigInteger;
 
-public class DocxStyler {
+class DocxStyler {
 
     private static final ObjectFactory factory = Context.getWmlObjectFactory();
 
@@ -14,6 +14,7 @@ public class DocxStyler {
         RFonts rFonts = factory.createRFonts();
         rFonts.setHAnsi(font);
         rFonts.setAscii(font);
+        rFonts.setCs(font);
         rPr.setRFonts(rFonts);
         HpsMeasure hpsMeasure = factory.createHpsMeasure();
         hpsMeasure.setVal(BigInteger.valueOf(size * 2));
@@ -34,10 +35,10 @@ public class DocxStyler {
         SectPr sectPr = factory.createSectPr();
         SectPr.PgMar pgMar = factory.createSectPrPgMar();
         sectPr.setPgMar(pgMar);
-        pgMar.setTop( BigInteger.valueOf(top));
-        pgMar.setRight( BigInteger.valueOf(right));
-        pgMar.setBottom( BigInteger.valueOf(bottom));
-        pgMar.setLeft( BigInteger.valueOf(left));
+        pgMar.setTop(BigInteger.valueOf(top));
+        pgMar.setRight(BigInteger.valueOf(right));
+        pgMar.setBottom(BigInteger.valueOf(bottom));
+        pgMar.setLeft(BigInteger.valueOf(left));
         return sectPr;
     }
 

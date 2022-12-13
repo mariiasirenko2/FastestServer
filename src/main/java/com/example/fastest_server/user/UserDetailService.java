@@ -1,6 +1,5 @@
 package com.example.fastest_server.user;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,9 +20,8 @@ public class UserDetailService implements UserDetailsService {
         User user = userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(
                 "User not found: check username"));
 
-        return  new UserDetailModel(user);
+        return new UserDetailModel(user);
 
     }
-
 
 }

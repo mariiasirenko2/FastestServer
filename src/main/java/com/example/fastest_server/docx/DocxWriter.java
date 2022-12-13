@@ -1,4 +1,5 @@
 package com.example.fastest_server.docx;
+
 import com.example.fastest_server.answer.Answer;
 import com.example.fastest_server.question.Question;
 import com.example.fastest_server.variant.Variant;
@@ -32,14 +33,12 @@ class DocxWriter {
         MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
         Body body = mainDocumentPart.getContents().getBody();
         RPr defaultProperties = DocxStyler.setFontPropertyRPr("Times New Roman", 14);
-        for (Variant variant: variantList) {
+        for (Variant variant : variantList) {
             String str = variant.getStudentName() + "    " + String.valueOf(variant.getMark());
             body.getContent().add(DocxContentCreator.addTextParagraph(str, defaultProperties));
         }
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         wordPackage.save(outputStream);
-       // File exportFile = new File("results.docx");
-        //wordPackage.save(exportFile);
         return outputStream.toByteArray();
     }
 
@@ -50,9 +49,8 @@ class DocxWriter {
         body.setSectPr(DocxStyler.setDocumentBorders(425, 1440, 425, 1440));
         RPr defaultProperties = DocxStyler.setFontPropertyRPr("Times New Roman", 14);
         defaultProperties.setB(new BooleanDefaultTrue());
-        File image = new File("blank.png" );
-
-        for (Variant variant: variantList) {
+        File image = new File("blank.png");
+        for (Variant variant : variantList) {
             Map<EncodeHintType, ErrorCorrectionLevel> hashMap = new HashMap<EncodeHintType, ErrorCorrectionLevel>();
             //generates QR code with Low level(L) error correction capability
             hashMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
@@ -80,11 +78,10 @@ class DocxWriter {
         }
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        //File file = new File("blanks.docx");
-        //wordPackage.save(file);
+        File file = new File("blanks.docx");
+        wordPackage.save(file);
         wordPackage.save(outputStream);
         return outputStream.toByteArray();
-
 
 
     }
@@ -105,7 +102,7 @@ class DocxWriter {
         boldText.setB(new BooleanDefaultTrue());
         int idCounter = 1;
 
-        for (Variant variant: variantList) {
+        for (Variant variant : variantList) {
             SortedSet<VariantQuestion> questionSet = new TreeSet<>(variant.getVariantQuestions());
             P nameParagraph = DocxContentCreator.addTextParagraph(variant.getStudentName(), boldText);
             nameParagraph.setPPr(new PPr());
@@ -123,7 +120,7 @@ class DocxWriter {
             numbering.getNum().add(num);
             numbering.getAbstractNum().add(abstractNum);
 
-            for (VariantQuestion variantQuestion: questionSet) {
+            for (VariantQuestion variantQuestion : questionSet) {
                 Question question = variantQuestion.getQuestion();
                 P questionParagraph = DocxContentCreator.addTextParagraph(question.getText(), defaultText);
                 PPr questionPPr = factory.createPPr();

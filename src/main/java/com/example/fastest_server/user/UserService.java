@@ -20,7 +20,7 @@ public class UserService {
     private final UserDetailService userDetailService;
 
 
-    public User  signUpUser(User user) {
+    public User signUpUser(User user) {
 
         boolean userExists = userRepository
                 .findByEmail(user.getEmail())
@@ -29,7 +29,7 @@ public class UserService {
             throw new IllegalStateException("Invalid email");
         }
 
-       //encode password and push new user to DB
+        //encode password and push new user to DB
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setUserRole(UserRole.USER);
         userRepository.save(user);
@@ -38,14 +38,14 @@ public class UserService {
         return user;
     }
 
-    public User getUserIdByUsername(String username){
+    public User getUserIdByUsername(String username) {
 
         return userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException(
                 "User not found: check username"));
 
     }
 
-    public User getUserById(Long id){
+    public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException(
                 "User not found: check username"));
     }
