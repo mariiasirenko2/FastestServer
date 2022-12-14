@@ -50,7 +50,7 @@ public class TestController {
     }
 
     @PostMapping("/profile/{idUser}/GenerateTest")
-    public Collection<Question> generateTest(@RequestParam(value = "testName", defaultValue = "Hakuna Matata") String testName,
+    public Collection<Question> generateTest(@RequestParam(value = "testName") String testName,
                                              @RequestParam(value = "questionFile") MultipartFile questionMultipartFile,
                                              @RequestParam(value = "studentFile") MultipartFile studentMultipartFile,
                                              @PathVariable(value = "idUser") Long idUser) throws JAXBException, Docx4JException, IOException {
