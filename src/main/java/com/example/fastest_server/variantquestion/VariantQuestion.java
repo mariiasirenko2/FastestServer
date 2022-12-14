@@ -11,30 +11,30 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table (name = "variant_question")
+@Table(name = "variant_question")
 @Data
 @NoArgsConstructor
-public class VariantQuestion implements Comparable<VariantQuestion>{
+public class VariantQuestion implements Comparable<VariantQuestion> {
     @EmbeddedId
     private VariantQuestionKey id;
 
     @JsonIgnore
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("variantId")
     @JoinColumn(name = "variant_id")
     private Variant variant;
 
     @JsonIgnore
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("questionId")
     @JoinColumn(name = "question_id")
     private Question question;
 
 
-    @Column (name = "question_number")
+    @Column(name = "question_number")
     private Integer questionNumber;
 
-    @Column (name = "letter_answer")
+    @Column(name = "letter_answer")
     @Enumerated(EnumType.STRING)
     private Chars letterAnswer;
 

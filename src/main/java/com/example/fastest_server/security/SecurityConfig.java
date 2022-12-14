@@ -1,7 +1,6 @@
 package com.example.fastest_server.security;
 
 import com.example.fastest_server.user.UserDetailService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
     private final UserDetailsService userDetailsService;
 
     @Autowired
@@ -30,9 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/fastest/signup","/fastest/profile")
-                    .permitAll()
-                .antMatchers("/profile/**")
+                .antMatchers("/fastest/signup", "/fastest/profile/**")
+                .permitAll()
+                .antMatchers("/profile/")
                 .hasAnyRole("USER")
                 .anyRequest()
                 .authenticated()
@@ -43,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-       auth.authenticationProvider(daoAuthenticationProvider());
+        auth.authenticationProvider(daoAuthenticationProvider());
 
     }
 

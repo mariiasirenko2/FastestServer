@@ -10,11 +10,11 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
-@Table (name = "users")
+@Table(name = "users")
 @Data
 @ToString
 @NoArgsConstructor
-public class User  {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,16 +34,16 @@ public class User  {
 
     @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private Collection<Test> tests;
 
 
-    public User (String username, String email, String password){
+    public User(String username, String email, String password) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.userRole = UserRole.USER;
     }
-
 
 
     public String getPassword() {

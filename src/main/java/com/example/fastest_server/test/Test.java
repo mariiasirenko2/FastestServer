@@ -20,13 +20,13 @@ public class Test {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column (name = "test_name")
+    @Column(name = "test_name")
     private String testName;
 
-    @Column (name = "students_list")
+    @Column(name = "students_list")
     private String[] students;
 
-    @ManyToOne (fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", nullable = false)
     @JsonIgnore
     private User owner;

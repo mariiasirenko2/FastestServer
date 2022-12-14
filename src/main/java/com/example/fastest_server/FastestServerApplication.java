@@ -9,14 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class FastestServerApplication {
 
 
-  static {
-    nu.pattern.OpenCV.loadLocally();
-   // System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME);
-  }
-
   public static void main(String[] args) {
     SpringApplication.run(FastestServerApplication.class, args);
-
   }
-
 }

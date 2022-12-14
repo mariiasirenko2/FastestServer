@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -25,11 +24,11 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column (name = "text")
+    @Column(name = "text")
     private String text;
 
-    @ManyToOne (fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "test_id",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "test_id", nullable = false)
     @JsonIgnore
     private Test test;
 

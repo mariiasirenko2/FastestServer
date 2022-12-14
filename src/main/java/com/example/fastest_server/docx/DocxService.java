@@ -6,6 +6,7 @@ import com.google.zxing.WriterException;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ public class DocxService {
         }
         return null;
     }
+
     public byte[] generateResults(List<Variant> variantList) {
         try {
             return docxWriter.generateResults(variantList);
@@ -42,6 +44,7 @@ public class DocxService {
             return null;
         }
     }
+
     public byte[] generateQuestionDoc(List<Variant> variantList) {
         try {
             return docxWriter.generateQuestionDoc(variantList);
@@ -50,6 +53,7 @@ public class DocxService {
             return null;
         }
     }
+
     public List<Question> readQuestions(InputStream questionsFile) {
         try {
             return docxReader.readQuestions(questionsFile);
@@ -60,6 +64,7 @@ public class DocxService {
         }
         return null;
     }
+
     public List<String> readStudents(InputStream file) {
         try {
             return docxReader.readStudents(file);

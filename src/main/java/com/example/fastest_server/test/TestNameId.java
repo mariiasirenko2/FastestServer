@@ -3,8 +3,9 @@ package com.example.fastest_server.test;
 public class TestNameId {
 
     //TODO :Это БОЛЬШУЩИЙ КОСТЫЛЬ
-    private String name;
     private Long id;
+    private String name;
+
 
     public TestNameId(String name, Long id) {
         this.name = name;

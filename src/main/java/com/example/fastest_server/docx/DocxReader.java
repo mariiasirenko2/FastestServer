@@ -1,4 +1,5 @@
 package com.example.fastest_server.docx;
+
 import com.example.fastest_server.answer.Answer;
 import com.example.fastest_server.question.Question;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -22,7 +23,6 @@ class DocxReader {
         String textNodesXPath = "//w:p";
         List<Object> textNodes = mainDocumentPart
                 .getJAXBNodesViaXPath(textNodesXPath, true);
-
         for (Object obj : textNodes) {
             P paragraph = (P) obj;
             if (paragraph.getPPr().getNumPr().getIlvl() != null) {

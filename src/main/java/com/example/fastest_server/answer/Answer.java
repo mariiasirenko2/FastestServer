@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Entity
 @Table(name = "answers")
@@ -19,14 +18,14 @@ public class Answer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column (name = "text")
+    @Column(name = "text")
     private String text;
 
-    @Column (name = "is_right")
+    @Column(name = "is_right")
     private Boolean isRight;
 
-    @ManyToOne (fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "question_id",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "question_id", nullable = false)
     @JsonIgnore
     private Question question;
 

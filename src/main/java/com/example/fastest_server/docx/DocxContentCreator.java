@@ -17,6 +17,7 @@ import java.util.Map;
 class DocxContentCreator {
 
     private static final ObjectFactory factory = Context.getWmlObjectFactory();
+
     static P addImageParagraph(Inline inline) {
         P p = factory.createP();
         R r = factory.createR();
@@ -48,8 +49,7 @@ class DocxContentCreator {
         return breakParagraph;
     }
 
-    static byte[] generateQR(String data, String charset, Map map, int h, int w) throws WriterException, IOException
-    {
+    static byte[] generateQR(String data, String charset, Map map, int h, int w) throws WriterException, IOException {
         BitMatrix matrix = new MultiFormatWriter().encode(new String(data.getBytes(charset), charset), BarcodeFormat.QR_CODE, w, h);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(MatrixToImageWriter.toBufferedImage(matrix), "png", baos);
