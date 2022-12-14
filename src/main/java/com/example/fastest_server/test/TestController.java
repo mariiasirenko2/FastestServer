@@ -2,11 +2,18 @@ package com.example.fastest_server.test;
 
 
 import com.example.fastest_server.answer.Chars;
+import com.example.fastest_server.photo.PhotoService;
 import com.example.fastest_server.question.Question;
 import com.example.fastest_server.user.UserService;
 import com.example.fastest_server.variant.Variant;
 import com.example.fastest_server.variant.VariantService;
 import com.example.fastest_server.variantquestion.VariantQuestionService;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import javax.ws.rs.Produces;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
@@ -25,6 +32,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping(path = "/fastest")
+
 @CrossOrigin
 @Slf4j
 public class TestController {
